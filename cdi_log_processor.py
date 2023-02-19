@@ -7,7 +7,7 @@ DEBUG = True
 
 
 def main() -> None:
-    base_path = "C:/Users/helew/Desktop/Crystal Disk Info"
+    base_path = r"Z:\Benchmarks\HDD Info\Crystal Disk Info\Calculated"
     generate_data(base_path)
 
 
@@ -137,9 +137,19 @@ def generate_data(base_path: str) -> None:
 
 def get_make_and_model(model_text: str) -> Tuple[str, str]:
     if " " in model_text:
-        return tuple(model_text.split(" "))
+        return tuple(model_text.split(" ", 1))
     elif model_text.startswith("ST"):
         return "Seagate", model_text
+    elif model_text.startswith("CT"):
+        return "Crucial", model_text
+    elif model_text.startswith("HDS"):
+        return "Hitachi", model_text
+    elif model_text.startswith("HFM"):
+        return "SK Hynix", model_text
+    elif model_text.startswith("WD"):
+        return "WDC", model_text
+    elif model_text.startswith("Micron"):
+        return "Micron", model_text
     elif model_text.startswith("STM"):
         return "Seagate Maxtor", model_text
     else:

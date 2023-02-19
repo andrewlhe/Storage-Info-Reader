@@ -9,7 +9,7 @@ DEBUG = True
 
 def main() -> None:
 
-    base_path = r"C:\Users\helew\Desktop\Disk report"
+    base_path = r"Z:\Benchmarks\HDD Info\HD Sentinel"
     if platform == "darwin":
         base_path = "/Users/haoyuanxia/Downloads/Storage Media/HDS Logs"
     generate_data(base_path)
@@ -172,6 +172,16 @@ def get_make_and_model(model_text: str) -> Tuple[str, str]:
         return tuple(model_text.split(" ", maxsplit=1))
     elif model_text.startswith("ST"):
         return "Seagate", model_text
+    elif model_text.startswith("CT"):
+        return "Crucial", model_text
+    elif model_text.startswith("HDS"):
+        return "Hitachi", model_text
+    elif model_text.startswith("HFM"):
+        return "SK Hynix", model_text
+    elif model_text.startswith("WD"):
+        return "WDC", model_text
+    elif model_text.startswith("Micron"):
+        return "Micron", model_text
     elif model_text.startswith("STM"):
         return "Seagate Maxtor", model_text
     else:

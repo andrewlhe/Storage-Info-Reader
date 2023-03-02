@@ -34,12 +34,10 @@ def generate_data(base_path: str) -> None:
         "power_on_hours",
         "power_on_count",
         "health_status",
-        "info_date",
-        "owner",
-        "listed",
-        "sold",
-        "sold_date",
-        "price"
+        "host_reads_GB",
+        "host_writes_GB",
+        "NAND_writes_GB",
+        "info_date"
     ]
 
     df = pd.DataFrame(columns=columns)
@@ -121,6 +119,14 @@ def generate_data(base_path: str) -> None:
                         power_on_minutes_value = power_on_minutes_match_object.group().replace(" minutes", "")
                         power_on_hours += int(power_on_minutes_value) / 60
                     new_row["power_on_hours"] = "{:.0f}".format(power_on_hours)
+                
+                if line.startswith("Lifetime Writes"):
+                    host_write_value = 0
+                    host_write_TB_match_object = re.search(r"\d+\.\d+ TB", line)
+                    if host_write_TB_match_object is not None:
+                        host_write_value_TB = host_write_TB_match_object.group().replace(" TB", "")
+                        host_write_value = float(host_write_value_TB) * 1024
+                    new_row["host_writes_GB"] = "{:.0f}".format(host_write_value)
 
                 if line.startswith("Accumulated start-stop cycles"):
                     power_on_count_match_object = re.search(r"\d+$", line)

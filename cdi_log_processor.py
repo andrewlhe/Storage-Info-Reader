@@ -7,7 +7,7 @@ DEBUG = True
 
 
 def main() -> None:
-    base_path = r"Z:\Benchmarks\HDD Info\Crystal Disk Info\Calculated"
+    base_path = r"Z:\Benchmarks\HDD Info\Crystal Disk Info"
     generate_data(base_path)
 
 
@@ -30,12 +30,10 @@ def generate_data(base_path: str) -> None:
         "power_on_hours",
         "power_on_count",
         "health_status",
-        "info_date",
-        "owner",
-        "listed",
-        "sold",
-        "sold_date",
-        "price"
+        "host_reads_GB",
+        "host_writes_GB",
+        "NAND_writes_GB",
+        "info_date"
     ]
 
     df = pd.DataFrame(columns=columns)
@@ -112,6 +110,24 @@ def generate_data(base_path: str) -> None:
                         new_row["health_status"] = health_status_text.replace(" (100 %)", "")
                     else:
                         new_row["health_status"] = health_status_text
+                
+                if line.startswith("Host Reads : "):
+                    host_reads_match_object = re.search(r"\d+ GB", line)
+                    if host_reads_match_object is not None:
+                        host_reads_value = host_reads_match_object.group().replace(" GB", "")
+                        new_row["host_reads_GB"] = host_reads_value
+
+                if line.startswith("Host Writes : "):
+                    host_writes_match_object = re.search(r"\d+ GB", line)
+                    if host_writes_match_object is not None:
+                        host_writes_value = host_writes_match_object.group().replace(" GB", "")
+                        new_row["host_writes_GB"] = host_writes_value
+                
+                if line.startswith("NAND Writes : "):
+                    NAND_writes_match_object = re.search(r"\d+ GB", line)
+                    if NAND_writes_match_object is not None:
+                        NAND_writes_value = NAND_writes_match_object.group().replace(" GB", "")
+                        new_row["NAND_writes_GB"] = NAND_writes_value
 
                 if line == "-- S.M.A.R.T. --------------------------------------------------------------":
                     # End signal
@@ -152,6 +168,8 @@ def get_make_and_model(model_text: str) -> Tuple[str, str]:
         return "Micron", model_text
     elif model_text.startswith("STM"):
         return "Seagate Maxtor", model_text
+    elif model_text.startswith("F2C"):
+        return "Fortinet OCZ", model_text
     else:
         return "", model_text
 
